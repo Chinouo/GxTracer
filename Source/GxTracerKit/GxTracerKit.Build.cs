@@ -38,6 +38,11 @@ public class GxTracerKit : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				"RHI",
+				"SlateRHIRenderer",
+				"ToolMenus",
+				"RenderCore"
+				
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
