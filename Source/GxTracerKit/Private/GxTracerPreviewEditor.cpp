@@ -18,10 +18,10 @@ FGxTracerPreviewEditor::FGxTracerPreviewEditor(const TSharedRef<FGxTracerHost>& 
 void FGxTracerPreviewEditor::InitializeEditor()
 {
 	BuildWidgetInternal();
-	
+
 	TSharedRef<SDockTab> NewMajorTab = SNew(SDockTab).TabRole(MajorTab);
 	TabManager = FGlobalTabmanager::Get()->NewTabManager(NewMajorTab);
-	
+
 	EditorLayout = PerformLayout();
 	RegisterTabSpawners(TabManager.ToSharedRef());
 	bEditorInitialized = true;
@@ -49,33 +49,53 @@ TSharedRef<SDockTab> FGxTracerPreviewEditor::SpawnGxTracerPreviewEditorTab()
 		.Label(FText::FromName(TabName))
 		[
 			SNew(SVerticalBox)
-			+SVerticalBox::Slot()
+			+ SVerticalBox::Slot()
 			.Padding(6.0f)
-			.MaxHeight(55.0f)
 			[
 				SNew(SHorizontalBox)
-				+SHorizontalBox::Slot()
-				.MaxWidth(50.0f)
+				+ SHorizontalBox::Slot()
+				.AutoWidth()
 				[
 					SNew(SButton)
+					.HAlign(HAlign_Fill)
+					[
+						SNew(SImage)
+						.Image((FAppStyle::Get().GetBrush("Icons.Toolbar.Play")))
+					]
 				]
-				+SHorizontalBox::Slot()
-				.MaxWidth(50.0f)
+				+ SHorizontalBox::Slot()
+				.AutoWidth()
 				[
 					SNew(SButton)
+					[
+						SNew(SImage)
+						.Image(FAppStyle::Get().GetBrush("Icons.Toolbar.Pause"))
+					]
 				]
-				+SHorizontalBox::Slot()
-				.MaxWidth(50.0f)
+				+ SHorizontalBox::Slot()
+				.AutoWidth()
 				[
 					SNew(SButton)
+					[
+						SNew(SImage)
+						.Image(FAppStyle::Get().GetBrush("Icons.Toolbar.Stop"))
+					]
 				]
-				
-				
+				+ SHorizontalBox::Slot()
+				.AutoWidth()
+				[
+					SNew(SButton)
+					[
+						SNew(SImage)
+						.Image(FAppStyle::Get().GetBrush("Icons.Save"))
+					]
+				]
 			]
-			+SVerticalBox::Slot()
-			[
-				TabManager->RestoreFrom(EditorLayout.ToSharedRef(), nullptr).ToSharedRef()
-			]
+			+ SVerticalBox::Slot()
+			.VAlign(VAlign_Fill)
+			// [
+			// 	TabManager->RestoreFrom(EditorLayout.ToSharedRef(), nullptr).ToSharedRef()
+			// ]
 		];
 }
 
@@ -91,18 +111,13 @@ TSharedRef<FTabManager::FLayout> FGxTracerPreviewEditor::PerformLayout()
 	return FTabManager::NewLayout("GxTracerPreviewEditorLayout")
 		->AddArea(
 			FTabManager::NewPrimaryArea()
-			->SetOrientation(Orient_Vertical)
-			->Split(
-				FTabManager::NewStack()
-				->SetHideTabWell(true)
-				->AddTab(ToolbarTabId, ETabState::OpenedTab)
-				->SetSizeCoefficient(0.1f)
-				
-			)
+			->SetOrientation(Orient_Horizontal)
 			->Split(FTabManager::NewStack()
-				->AddTab(ViewportTabId, ETabState::OpenedTab)
-				->SetHideTabWell(false)
-				->SetSizeCoefficient(0.9f)
+			        ->AddTab(ViewportTabId, ETabState::OpenedTab)
+			        ->SetHideTabWell(false)
+			)->Split(FTabManager::NewStack()
+			         ->AddTab(FGxTracerPreviewEditor::ToolbarTabId, ETabState::OpenedTab)
+			         ->SetHideTabWell(false)
 			)
 		);
 }
@@ -131,7 +146,7 @@ TSharedRef<SDockTab> FGxTracerPreviewEditor::OnSpawnToolbar(const FSpawnTabArgs&
 		[
 			SNew(SHorizontalBox)
 			+ SHorizontalBox::Slot()
-			.AutoWidth()
+			.MaxWidth(24.0f)
 			.Padding(3.5f)
 			[
 				SNew(SButton)
@@ -140,7 +155,7 @@ TSharedRef<SDockTab> FGxTracerPreviewEditor::OnSpawnToolbar(const FSpawnTabArgs&
 					.Image((FAppStyle::Get().GetBrush("Icons.sphere")))
 				]
 			]
-			
+
 		];
 }
 
@@ -149,6 +164,7 @@ TSharedRef<SDockTab> FGxTracerPreviewEditor::OnSpawnViewport(const FSpawnTabArgs
 	return SNew(SDockTab)
 		.TabRole(PanelTab)
 		[
-			SNew(STextBlock).Text(FText::FromString("Viewport"))
+			SNew(STextBlock)
+			.Text(FText::FromString("Viewport"))
 		];
 }
